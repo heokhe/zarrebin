@@ -9,20 +9,24 @@ fn main() {
         .version(crate_version!())
         .author("Hosein Khansari")
         .about("find files in terminal")
-        .arg(Arg::with_name("dir").takes_value(true).default_value(".").help("directory to search in").index(1))
-        .arg(Arg::with_name("extension").multiple(true).short("e").long("ext").takes_value(true).help("filter files by extension"))
+        .arg(Arg::with_name("dir")
+            .takes_value(true).default_value(".").help("directory to search in"))
+        .arg(Arg::with_name("extension")
+            .multiple(true).takes_value(true).require_delimiter(true).short("e").long("ext")
+            .help("filter files by extension (seperated by commas)"))
+        .arg(Arg::with_name("substring")
+            .takes_value(true).short("c").long("containing")
+            .help("filter files that contain the given text"))
+        .arg(Arg::with_name("name")
+            .takes_value(true).short("n").long("name")
+            .help("filter by name"))
         .get_matches();
 
     let dir = args.value_of("dir").unwrap();
     let treee = tree::make(dir).unwrap();
-    let exts: Vec<&str> = args.values_of("extension")
-        .and_then(|x| Some(x.collect())).unwrap_or(vec![]);
-    
     for item in &treee {
-        if filter::by_ext(&item, &exts) {
-            println!("{:#?}", item)
+        if filter::by_args(&item, &args) {
+            println!("{}", item.path.to_str().unwrap())
         }
     }
-
-    println!("got {} files", treee.len())
 }
