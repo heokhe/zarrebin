@@ -1,0 +1,9 @@
+[package]
+name = "zarrebin"
+version = "0.1.0"
+authors = ["Hosein Khansari <hrk.x11@gmail.com>"]
+
+[dependencies]
+clap = "2.32"
+serde_json = "1.0"
+colored = "1.6"

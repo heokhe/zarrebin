@@ -1,2 +1,2 @@
-# zarebin
+# Zarrebin
 🔎 find files from terminal
