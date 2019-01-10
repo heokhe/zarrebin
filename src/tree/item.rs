@@ -8,12 +8,21 @@ pub struct TreeItem {
     pub path: PathBuf
 }
 
+fn osstr_to_string(o: &OsStr) -> String {
+    o.to_string_lossy().to_string()
+}
+
+pub fn path_name(p: &PathBuf) -> String {
+    p.file_name().and_then(|e| Some(osstr_to_string(e))).unwrap()
+}
+
 impl From<PathBuf> for TreeItem {
     fn from(p: PathBuf) -> TreeItem {
-        let osstr_to_string = |e: &OsStr| Some(e.to_string_lossy().to_string());
         TreeItem {
-            extension: p.extension().and_then(osstr_to_string),
-            name: p.file_name().and_then(osstr_to_string).unwrap(),
+            extension: p.extension().and_then(|o| {
+                Some(osstr_to_string(o))
+            }),
+            name: path_name(&p),
             path: p
         }
     }
