@@ -25,6 +25,7 @@ fn main() {
             .help("filter by name"))
         .arg(Arg::with_name("depth")
             .takes_value(true).short("d").long("max-depth").help("depth for recursion (if negative, goes into every sub-directory if possible)"))
+        .arg_from_usage("-S --no-stats 'disable statistics'")
         .arg_from_usage("-F --flat 'disable recursion (equivalent to --depth 0)'")
         .arg_from_usage("-A --show-hidden 'show hidden entries'")
         .get_matches();
@@ -37,16 +38,25 @@ fn main() {
     };
 
     let ft = TreeMaker::new(depth, dir, args.is_present("show-hidden")).make(dir);
+
+    let mut stats = (0,0,0);
     for result in &ft {
+        stats.0 += 1;
         match result {
             Ok(tree_item) => {
+                stats.1 += 1;
                 if filter::by_args(&tree_item, &args) {
+                    stats.2 += 1;
                     println!("{} Found {} {:?}", "OK:".bold().green(), tree_item.name.bold(), tree_item.path)
                 }
             },
-            Err(e) => {
-                eprintln!("{} {}", "ERROR:".bold().red(), e.to_string())
+            Err((e, path)) => {
+                println!("{} Processing {:?}: {} ", "ERROR:".bold().red(), path, e.to_string().bold())
             }
         }
+    }
+    if !args.is_present("no-stats") {
+        let (all, no_error, passed) = stats;
+        println!("{} got {} results, {} successful, {} passed the filters", "STATS:".bold().blue(), all, no_error, passed)
     }
 }

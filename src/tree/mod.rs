@@ -3,13 +3,10 @@ use std::io::Error;
 use std::path::PathBuf;
 mod item;
 mod metadata;
-pub use self::item::{path_name, TreeItem};
+mod utils;
+pub use self::utils::*;
+pub use self::item::TreeItem;
 use self::metadata::FileType;
-
-/// returns the "length" of a path.
-fn path_len(p: &PathBuf) -> usize {
-    p.components().collect::<Vec<_>>().len()
-}
 
 pub struct TreeMaker {
     max_depth: isize,
@@ -25,13 +22,13 @@ impl TreeMaker {
             root_len: path_len(&PathBuf::from(root_dir)),
         }
     }
-    pub fn make(&self, dir: &str) -> Vec<Result<TreeItem, Error>> {
+    pub fn make(&self, dir: &str) -> Vec<Result<TreeItem, (Error, PathBuf)>> {
         let root_len = self.root_len;
         let max_depth = self.max_depth;
         let mut stack = vec![];
         if let Ok(entries) = fs::read_dir(dir) {
-            for entry in entries.map(|r| r.and_then(|e| metadata::info(e))) {
-                match entry {
+            for entry in entries.map(|e| e.unwrap()) {
+                match metadata::info(entry) {
                     Ok((path, ftype)) => {
                         if !self.show_hidden && path_name(&path).starts_with(".") {
                             continue;
@@ -56,8 +53,8 @@ impl TreeMaker {
                             }
                             FileType::Symlink => (), // TODO: add support for symlinks
                         }
-                    }
-                    Err(e) => stack.push(Err(e)),
+                    },
+                    Err(e) => stack.push(Err(e))
                 }
             }
         }

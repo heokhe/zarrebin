@@ -7,7 +7,7 @@ pub enum FileType {
     File, Directory, Symlink
 }
 
-fn type_of_entry(e: &std::fs::DirEntry) -> Result<FileType, Error> {
+fn type_of_entry(e: &DirEntry) -> Result<FileType, Error> {
     let md = e.metadata()?;
     Ok({
         if md.is_file() { FileType::File }
@@ -16,7 +16,15 @@ fn type_of_entry(e: &std::fs::DirEntry) -> Result<FileType, Error> {
     })
 }
 
-pub fn info(entry: DirEntry) -> Result<(PathBuf, FileType), Error> {
+pub fn info(entry: DirEntry) -> Result<(PathBuf, FileType), (Error, PathBuf)> {
     let p = entry.path();
-    type_of_entry(&entry).and_then(|md| Ok((p, md)))
+    match type_of_entry(&entry) {
+        Ok(ft) => Ok((p, ft)),
+        Err(e) => Err((e, p))
+    }
 }
+
+// pub fn info(entry: DirEntry) -> Result<(PathBuf, FileType), Error> {
+//     let p = entry.path();
+//     type_of_entry(&entry).and_then(|md| Ok((p, md)))
+// }
