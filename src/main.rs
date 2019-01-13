@@ -18,24 +18,23 @@ fn main() {
     let mut stats = (0,0,0);
     let instant = Instant::now();
 
-    for result in TreeMaker::new(depth, dir, args.is_present("show-hidden")).make(dir) {
+    for result in TreeMaker::new(depth, dir, args.is_present("ignore-hiddens")).make(dir) {
         stats.0 += 1;
         match result {
-            Ok(tree_item) => {
+            Ok(item) => {
                 stats.1 += 1;
-                if filter::by_args(&tree_item, &args) {
+                if filter::by_args(&item, &args) {
                     stats.2 += 1;
-                    println!("{} Found {} {:?}", "OK:".bold().green(), tree_item.name.bold(), tree_item.path)
+                    println!("{} found {} {:?}", "OK:".bold().green(), item.name.bold(), item.path)
                 }
             },
-            Err((e, path)) => {
-                println!("{} Processing {:?}: {} ", "ERROR:".bold().red(), path, e.to_string().bold())
-            }
+            Err((err, path)) => println!("{} processing {:?}: {} ", "ERROR:".bold().red(), path, err.to_string().bold())
         }
     }
     
     if !args.is_present("no-stats") {
         let (all, no_error, passed) = stats;
-        println!("{} done in {}, got {} results, {} successful, {} passed the filters", "STATS:".bold().blue(), format!("{:?}", instant.elapsed()).bold(), all, no_error, passed)
+        let dur = instant.elapsed();
+        println!("{} done in {}, got {} results, {} successful, {} passed the filters", "STATS:".bold().blue(), format!("{:?}", dur).bold(), all, no_error, passed)
     }
 }

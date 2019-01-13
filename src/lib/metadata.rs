@@ -2,7 +2,6 @@ use std::io::Error;
 use std::fs::DirEntry;
 use std::path::PathBuf;
 
-#[derive(Debug)]
 pub enum FileType {
     File, Directory, Symlink
 }

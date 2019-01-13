@@ -17,5 +17,5 @@ pub fn build<'a, 'b>() -> App<'a, 'b> {
             .takes_value(true).short("d").long("max-depth").help("depth for recursion (if negative, goes into every sub-directory if possible)"))
         .arg_from_usage("-S --no-stats 'disable statistics'")
         .arg_from_usage("-F --flat 'disable recursion (equivalent to --depth 0)'")
-        .arg_from_usage("-A --show-hidden 'show hidden entries'")
+        .arg_from_usage("-H --ignore-hiddens 'ignore hidden entries'")
 }

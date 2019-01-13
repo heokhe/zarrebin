@@ -11,14 +11,14 @@ use self::metadata::FileType;
 pub struct TreeMaker {
     max_depth: isize,
     root_len: usize,
-    show_hidden: bool,
+    ignore_hiddens: bool,
 }
 
 impl TreeMaker {
-    pub fn new(max_depth: isize, root_dir: &str, show_hidden: bool) -> TreeMaker {
+    pub fn new(max_depth: isize, root_dir: &str, ignore_hiddens: bool) -> TreeMaker {
         TreeMaker {
             max_depth,
-            show_hidden,
+            ignore_hiddens,
             root_len: path_len(&PathBuf::from(root_dir)),
         }
     }
@@ -30,9 +30,7 @@ impl TreeMaker {
             for entry in entries.map(|e| e.unwrap()) {
                 match metadata::info(entry) {
                     Ok((path, ftype)) => {
-                        if !self.show_hidden && path_name(&path).starts_with(".") {
-                            continue;
-                        }
+                        if self.ignore_hiddens && path_name(&path).starts_with(".") { continue }
 
                         match ftype {
                             FileType::File => stack.push(Ok(TreeItem::from(path))),
@@ -51,7 +49,7 @@ impl TreeMaker {
                                     }
                                 }
                             }
-                            FileType::Symlink => (), // TODO: add support for symlinks
+                            FileType::Symlink => continue, // TODO: add support for symlinks
                         }
                     },
                     Err(e) => stack.push(Err(e))
