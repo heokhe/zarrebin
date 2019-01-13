@@ -23,8 +23,3 @@ pub fn info(entry: DirEntry) -> Result<(PathBuf, FileType), (Error, PathBuf)> {
         Err(e) => Err((e, p))
     }
 }
-
-// pub fn info(entry: DirEntry) -> Result<(PathBuf, FileType), Error> {
-//     let p = entry.path();
-//     type_of_entry(&entry).and_then(|md| Ok((p, md)))
-// }

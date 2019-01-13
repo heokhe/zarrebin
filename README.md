@@ -4,11 +4,7 @@
 ```sh
 zarrebin [FLAGS] [OPTIONS] [--] [dir]
 ```
-It can accept options and **filters**. 
-## Filters
-- `-e, --ext <extension>...` filter files by extension
-- `-n, --name <name>` filter by name
-- `-c, --containing <substring>` filter files that contain the given text
+It can accept options and **filters**. See more in [usage.md](usage.md).
 ## Build
 ```sh
 git clone https://github.com/hkh12/zarrebin.git
