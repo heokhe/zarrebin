@@ -10,6 +10,9 @@ mod filter;
 
 fn main() {
     let args = cli::build().get_matches();
+    
+    let no_pretty = args.is_present("machine");
+    if no_pretty { colored::control::set_override(false) }
 
     let dir = args.value_of("dir").unwrap();
     let depth: isize = if args.is_present("flat") { 0 }
@@ -25,10 +28,18 @@ fn main() {
                 stats.1 += 1;
                 if filter::by_args(&item, &args) {
                     stats.2 += 1;
-                    println!("{} found {} {:?}", "OK:".bold().green(), item.name.bold(), item.path)
+                    if no_pretty {
+                        println!("{}", item.path.to_str().unwrap())
+                    } else {
+                        println!("{} found {} {:?}", "OK:".bold().green(), item.name.bold(), item.path)
+                    }
                 }
             },
-            Err((err, path)) => println!("{} processing {:?}: {} ", "ERROR:".bold().red(), path, err.to_string().bold())
+            Err((err, path)) => {
+                if !args.is_present("ignore-errors") {
+                    println!("{} processing {:?}: {} ", "ERROR:".bold().red(), path, err.to_string().bold())
+                }
+            }
         }
     }
     

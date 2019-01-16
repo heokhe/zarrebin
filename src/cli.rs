@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 
 pub fn build<'a, 'b>() -> App<'a, 'b> {
-     App::new("Zarrebin")
+    App::new("Zarrebin")
         .version(crate_version!())
         .author(crate_authors!())
         .about("find files in terminal")
@@ -16,6 +16,8 @@ pub fn build<'a, 'b>() -> App<'a, 'b> {
         .arg(Arg::with_name("depth")
             .takes_value(true).short("d").long("max-depth").help("depth for recursion (if negative, goes into every sub-directory if possible)"))
         .arg_from_usage("-S --no-stats 'disable statistics'")
-        .arg_from_usage("-F --flat 'disable recursion (equivalent to --depth 0)'")
+        .arg_from_usage("-f --flat 'disable recursion (equivalent to --depth 0)'")
         .arg_from_usage("-H --ignore-hiddens 'ignore hidden entries'")
+        .arg_from_usage("-M --machine 'use machine-readable output'")
+        .arg_from_usage("-I --ignore-errors 'don't print any error info'")
 }
