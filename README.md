@@ -10,5 +10,5 @@ It can accept options and **filters**. See more in [usage.md](usage.md).
 git clone https://github.com/hkh12/zarrebin.git
 cd zarrebin
 cargo build --release
+cargo install --force --path .
 ```
-> Maybe I'll publish it as a snap...!
