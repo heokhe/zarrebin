@@ -6,6 +6,7 @@ description = "find files from terminal"
 keywords = ["cli"]
 license = "GPL-3.0"
 readme = "README.md"
+repository = "https://github.com/hkh12/zarrebin"
 
 [dependencies]
 clap = "2.32"
