@@ -14,8 +14,7 @@ impl From<PathBuf> for TreeItem {
             extension: p.extension().and_then(|o| {
                 Some(osstr_to_string(o))
             }),
-            name: path_name(&p),
-            path: p
+            name: path_name(&p), path: p
         }
     }
 }

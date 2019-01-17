@@ -4,7 +4,7 @@ extern crate colored;
 use colored::Colorize;
 use std::time::Instant;
 mod lib;
-use lib::TreeMaker;
+use lib::{TreeMaker, path_to_string};
 mod cli;
 mod filter;
 
@@ -17,11 +17,11 @@ fn main() {
     let dir = args.value_of("dir").unwrap();
     let depth: isize = if args.is_present("flat") { 0 }
     else { args.value_of("depth").and_then(|d| d.parse().ok()).unwrap_or(-1) };
+    let exclude = args.values_of("exclude").and_then(|x| Some(x.collect())).unwrap_or(vec![]);
 
     let mut stats = (0,0,0);
     let instant = Instant::now();
-
-    for result in TreeMaker::new(depth, dir, args.is_present("ignore-hiddens")).make(dir) {
+    for result in TreeMaker::new(depth, dir, args.is_present("ignore-hiddens"), &exclude).make(dir) {
         stats.0 += 1;
         match result {
             Ok(item) => {
@@ -29,9 +29,9 @@ fn main() {
                 if filter::by_args(&item, &args) {
                     stats.2 += 1;
                     if no_pretty {
-                        println!("{}", item.path.to_str().unwrap())
+                        println!("{}", path_to_string(&item.path))
                     } else {
-                        println!("{} found {} {:?}", "OK:".bold().green(), item.name.bold(), item.path)
+                        println!("{} found {}", "OK:".bold().green(), path_to_string(&item.path).bold())
                     }
                 }
             },

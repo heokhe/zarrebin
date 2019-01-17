@@ -16,9 +16,10 @@ FLAGS:
     -V, --version           Prints version information
 
 OPTIONS:
-    -d, --max-depth <depth>     depth for recursion (if negative, goes into every sub-directory if possible)
-    -e, --ext <extension>...    filter files by extension
-    -n, --name <name>           filter by name
+    -d, --max-depth <depth>       depth for recursion (if negative, goes into every sub-directory if possible)
+    -x, --exclude <exclude>...    directories to exclude (doesn't work with sub-directories yet)
+    -e, --ext <extension>...      filter files by extension
+    -n, --name <name>             filter by name
 
 ARGS:
     <dir>    directory to search in [default: .]
