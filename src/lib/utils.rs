@@ -19,6 +19,7 @@ pub fn path_len(p: &PathBuf) -> usize {
 }
 
 /// gets the "real path" of a PathBuf (like unix realpath)
+#[allow(dead_code)]
 pub fn realpath(target: &PathBuf, base: &PathBuf) -> PathBuf {
 	PathBuf::from(
 		path_to_string(&target.canonicalize().unwrap())

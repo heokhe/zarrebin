@@ -6,6 +6,7 @@ use std::time::Instant;
 mod lib;
 use lib::{TreeMaker, path_to_string};
 mod cli;
+use std::env;
 mod filter;
 
 fn main() {
@@ -14,7 +15,8 @@ fn main() {
     let no_pretty = args.is_present("machine");
     if no_pretty { colored::control::set_override(false) }
 
-    let dir = args.value_of("dir").unwrap();
+	let cur_dir = path_to_string(&env::current_dir().unwrap());
+    let dir = args.value_of("dir").unwrap_or(&cur_dir);
     let depth: isize = if args.is_present("flat") { 0 }
     else { args.value_of("depth").and_then(|d| d.parse().ok()).unwrap_or(-1) };
     let exclude = args.values_of("exclude").and_then(|x| Some(x.collect())).unwrap_or(vec![]);
@@ -31,13 +33,13 @@ fn main() {
                     if no_pretty {
                         println!("{}", path_to_string(&item.path))
                     } else {
-                        println!("{} found {}", "OK:".bold().green(), path_to_string(&item.path).bold())
+                        println!("{} {}", "found".green().bold(), path_to_string(&item.path).bold())
                     }
                 }
             },
             Err((err, path)) => {
                 if !args.is_present("ignore-errors") {
-                    println!("{} processing {:?}: {} ", "ERROR:".bold().red(), path, err.to_string().bold())
+                    println!("{} {}: {} ", "error".bold().red(), err.to_string().to_lowercase().bold(), path_to_string(&path))
                 }
             }
         }
@@ -46,6 +48,6 @@ fn main() {
     if !args.is_present("no-stats") {
         let (all, no_error, passed) = stats;
         let dur = instant.elapsed();
-        println!("{} done in {}, got {} results, {} successful, {} passed the filters", "STATS:".bold().blue(), format!("{:?}", dur).bold(), all, no_error, passed)
+        println!("{} done in {}, got {} results, {} successful, {} passed the filters", "stats".bold().blue(), format!("{:?}", dur).bold(), all, no_error, passed)
     }
 }

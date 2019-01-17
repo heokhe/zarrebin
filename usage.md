@@ -22,5 +22,5 @@ OPTIONS:
     -n, --name <name>             filter by name
 
 ARGS:
-    <dir>    directory to search in [default: .]
+    <dir>    directory to search in
 ```

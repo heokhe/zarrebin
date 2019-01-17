@@ -26,7 +26,7 @@ impl<'a> TreeMaker<'a> {
         let root_len = path_len(&self.root_dir);
         let max_depth = self.max_depth;
         let mut stack = vec![];
-        if let Ok(entries) = fs::read_dir(dir) {
+        if let Ok(entries) = fs::read_dir(fs::canonicalize(dir).unwrap()) {
             for entry in entries.map(|e| e.unwrap()) {
                 match metadata::info(entry) {
                     Ok((path, ftype)) => {
@@ -34,7 +34,7 @@ impl<'a> TreeMaker<'a> {
 
                         match ftype {
                             FileType::File => {
-								stack.push(Ok(TreeItem::from(realpath(&path, &self.root_dir))))
+								stack.push(Ok(TreeItem::from(path)))
 							},
                             FileType::Directory => {
                                 let cur_depth = path_len(&path) - root_len - 1;
@@ -53,7 +53,7 @@ impl<'a> TreeMaker<'a> {
                             FileType::Symlink => continue, // TODO: add support for symlinks
                         }
                     },
-                    Err(e) => stack.push(Err(e))
+					Err(e) => stack.push(Err(e))
                 }
             }
         }
