@@ -1,6 +1,6 @@
 [package]
 name = "zarrebin"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Hosein Khansari <hrk.x11@gmail.com>"]
 description = "find files from terminal"
 keywords = ["cli"]

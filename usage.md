@@ -1,5 +1,5 @@
 ```
-Zarrebin 0.1.0
+Zarrebin 0.1.1
 Hosein Khansari <hrk.x11@gmail.com>
 find files in terminal
 
